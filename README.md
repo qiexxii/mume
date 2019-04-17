@@ -258,7 +258,7 @@ Global config files are located at `~/.mume` directory
   For `Markdown Preview Enhanced`, add following setting in the VSCode Workspace settings.
 
   ```json
-  "markdown-preview-enhanced.pandocArguments": "--reference-doc='${workspaceFolder}\\pandoc-data\\reference.docx', --toc",
+  "markdown-preview-enhanced.pandocArguments": "--reference-doc${workspaceFolder}\\pandoc-data\\reference.docx",
   ```
 
 * Support project-level style.less
