@@ -218,3 +218,52 @@ Global config files are located at `~/.mume` directory
 2.  Run `npm install` from shell
 3.  Open in vscode, then `cmd+shift+b` to build
 4.  Run the tests with `npm run test`
+
+### How to build MPE VSCode extension
+
+1. Clone MPE
+
+  ```cmd
+  git clone https://github.com/shd101wyy/vscode-markdown-preview-enhanced.git
+  ```
+
+2. Delete `mume` dependency in package.json
+
+  ```json
+  "dependencies": {
+        "@shd101wyy/mume": "^0.3.8",  // delete this line
+        "@types/vfile": "^3.0.2"
+  };
+  ```
+
+3. install modified `mume` package
+
+  ```cmd
+  npm install /path/to/shd101wyy-mume-0.3.8.tgz
+  ```
+
+4. install other dependencies
+
+  ```cmd
+  npm install
+  ```
+
+5. `F5` to Debug
+6. `vsce package` to create VSCode extension
+
+## What I changed
+
+* Support none-_output.yaml Pandoc Export
+
+  For `Markdown Preview Enhanced`, add following setting in the VSCode Workspace settings.
+
+  ```json
+  "markdown-preview-enhanced.pandocArguments": "--reference-doc='${workspaceFolder}\\pandoc-data\\reference.docx', --toc",
+  ```
+
+* Support project-level style.less
+
+  Place `style.less` under `/ProjectFolder/.mume/`
+
+
+Tested on VSCode only.

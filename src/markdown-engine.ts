@@ -1461,7 +1461,7 @@ for (var i = 0; i < flowcharts.length; i++) {
     // global styles
     let globalStyles = "";
     try {
-      globalStyles = await utility.getGlobalStyles();
+      globalStyles = await utility.getGlobalStyles(this.projectDirectoryPath);
     } catch (error) {
       // ignore it
     }
@@ -2207,7 +2207,7 @@ sidebarTOCBtn.addEventListener('click', function(event) {
     // global styles
     let globalStyles = "";
     try {
-      globalStyles = await utility.getGlobalStyles();
+      globalStyles = await utility.getGlobalStyles(this.projectDirectoryPath);
     } catch (error) {
       // ignore it
     }

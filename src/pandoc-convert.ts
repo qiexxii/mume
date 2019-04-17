@@ -140,12 +140,15 @@ function loadOutputYAML(fileDirectoryPath, config) {
   try {
     yaml = fs.readFileSync(yamlPath, { encoding: "utf-8" });
   } catch (error) {
-    return Object.assign({}, config);
+    //  return Object.assign({}, config);
   }
 
   let data = {};
+  const defaultYAML = "output:\n  word_document:";
   if (yaml) {
     data = utility.parseYAML(yaml);
+  } else {
+    data = utility.parseYAML(defaultYAML);
   }
 
   if (config["output"]) {

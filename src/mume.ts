@@ -19,29 +19,50 @@ export { CodeChunkData } from "./code-chunk-data";
 /**
  * init mume config folder at ~/.mume
  */
-export async function init(): Promise<void> {
+export async function init(projectDirectoryPath): Promise<void> {
   if (INITIALIZED) {
     return;
   }
 
+  // console.log(projectDirectoryPath);
   const homeDir = os.homedir();
   const extensionConfigDirectoryPath = path.resolve(homeDir, "./.mume");
+  const projectExtensionConfigDirectoryPath = path.resolve(projectDirectoryPath);
   if (!fs.existsSync(extensionConfigDirectoryPath)) {
     fs.mkdirSync(extensionConfigDirectoryPath);
   }
 
-  configs.globalStyle = await utility.getGlobalStyles();
+  // wait to Get or Create configs in ~/.mume
+  configs.globalStyle = await utility.getGlobalStyles(projectExtensionConfigDirectoryPath);
   configs.mermaidConfig = await utility.getMermaidConfig();
   configs.mathjaxConfig = await utility.getMathJaxConfig();
   configs.phantomjsConfig = await utility.getPhantomjsConfig();
   configs.parserConfig = await utility.getParserConfig();
   configs.config = await utility.getExtensionConfig();
 
+  // let existsProjectGlobalStyle = true;
+  // if (fs.existsSync(projectExtensionConfigDirectoryPath)) {
+  //   fs.watch(projectExtensionConfigDirectoryPath, (eventType, filename) => {
+  //     if (eventType === "change"){
+  //       if(filename === "style.less"){
+  //         existsProjectGlobalStyle = false;
+  //         utility.getProjectGlobalStyles(projectExtensionConfigDirectoryPath).then((css) => {
+  //           configs.globalStyle = css;
+  //           if (CONFIG_CHANGE_CALLBACK) {
+  //             CONFIG_CHANGE_CALLBACK();
+  //           }
+  //         });
+  //       }
+  //     }
+  //   });
+  // }
+
   fs.watch(extensionConfigDirectoryPath, (eventType, fileName) => {
     if (eventType === "change") {
+      // if (fileName === "style.less" && existsProjectGlobalStyle) {
       if (fileName === "style.less") {
         // || fileName==='mermaid_config.js' || fileName==='mathjax_config')
-        utility.getGlobalStyles().then((css) => {
+        utility.getGlobalStyles(projectExtensionConfigDirectoryPath).then((css) => {
           configs.globalStyle = css;
           if (CONFIG_CHANGE_CALLBACK) {
             CONFIG_CHANGE_CALLBACK();

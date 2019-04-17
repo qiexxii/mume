@@ -189,9 +189,14 @@ export const extensionDirectoryPath = path.resolve(__dirname, "../../");
 /**
  * compile ~/.mumi/style.less and return 'css' content.
  */
-export async function getGlobalStyles(): Promise<string> {
+export async function getGlobalStyles(projectExtensionConfigDirectoryPath): Promise<string> {
   const homeDir = os.homedir();
-  const globalLessFilePath = path.resolve(homeDir, "./.mume/style.less");
+  const projectGlobalLessFilePath = path.resolve(projectExtensionConfigDirectoryPath, "./.mume/style.less");
+  const homeDirGlobalLessFilePath = path.resolve(homeDir, "./.mume/style.less");
+  let globalLessFilePath = homeDirGlobalLessFilePath;
+  if (fs.existsSync(projectGlobalLessFilePath)){
+    globalLessFilePath = projectGlobalLessFilePath;
+  }
 
   let fileContent: string;
   try {
@@ -207,7 +212,7 @@ export async function getGlobalStyles(): Promise<string> {
   // eg: background-color: blue;  
 }
 `;
-    await writeFile(globalLessFilePath, fileContent, { encoding: "utf-8" });
+    await writeFile(homeDirGlobalLessFilePath, fileContent, { encoding: "utf-8" });
   }
 
   return await new Promise<string>((resolve, reject) => {
@@ -228,6 +233,34 @@ export async function getGlobalStyles(): Promise<string> {
     );
   });
 }
+
+// export async function getProjectGlobalStyles(projectDirectoryPath): Promise<string> {
+//   const globalLessFilePath = path.resolve(projectDirectoryPath, "./.mume/style.less");
+
+//   let fileContent: string;
+//   try {
+//     fileContent = await readFile(globalLessFilePath, { encoding: "utf-8" });
+//   } catch (e) {
+//   }
+
+//   return await new Promise<string>((resolve, reject) => {
+//     less.render(
+//       fileContent,
+//       { paths: [path.dirname(globalLessFilePath)] },
+//       (error, output) => {
+//         if (error) {
+//           return resolve(`html body:before {
+//   content: "Failed to compile \`style.less\`. ${error}" !important;
+//   padding: 2em !important;
+// }
+// .mume.mume { display: none !important; }`);
+//         } else {
+//           return resolve(output.css || "");
+//         }
+//       },
+//     );
+//   });
+// }
 
 /**
  * load ~/.mume/mermaid_config.js file.
